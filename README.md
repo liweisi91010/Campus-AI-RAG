@@ -1,25 +1,21 @@
-下面内容可以直接复制为项目根目录的 `README.md`。
+# Campus AI RAG 定制化高校AI问答助手
 
-````markdown
-# Campus AI RAG 校园知识问答系统
+一个基于 **Python + FastAPI + Streamlit + MySQL + Milvus + LongCat/OpenAI 兼容大模型 API** 的高校AI问答助手。
 
-一个基于 **Python + FastAPI + Streamlit + MySQL + Milvus + LongCat/OpenAI 兼容大模型 API** 的校园知识问答系统。
-
-项目面向学生学工手册、教务文件、Markdown 规章制度等校园知识文档，支持将本校知识库向量化后进行检索增强生成，最终由大模型生成回答。系统支持 **人工审核模式** 和 **违禁词快速审核模式**，适合作为校园智能客服、学工问答助手、教务问答助手的原型项目。
+项目汇总了高校学生手册、教务处文件、高校规章制度等知识文档，支持将本校知识库向量化后进行检索增强生成，最终由大模型生成回答。系统支持 **人工审核模式** 和 **违禁词快速审核模式**，适合作为校园智能客服、学工问答助手、教务问答助手的原型项目。
 
 ---
 
 ## 1. 项目功能
 
 - 学生端在线提问
-- Markdown 校园知识文档入库
-- 本校关键词库匹配
+- Markdown格式 高校知识文档入库
+- 定制化高校关键词库匹配
 - 中文分词与本地向量生成
 - Milvus 向量检索
 - MySQL 保存问答记录、知识片段、审核状态
 - 调用 LongCat-Flash-Lite 或其他 OpenAI API 兼容模型生成回答
-- 支持人工审核后返回学生
-- 支持关闭人工审核，改用违禁词表进行快速审核
+- 支持人工审核后返回学生，支持关闭人工审核，改用违禁词表进行快速审核
 - 支持查询历史问题的审核状态和最终答案
 
 ---
@@ -30,8 +26,8 @@
 |---|---|
 | 后端 API | FastAPI |
 | 前端页面 | Streamlit |
-| 数据库 | MySQL 8 |
-| 向量数据库 | Milvus Standalone |
+| 数据库 | MySQL |
+| 向量数据库 | Milvus |
 | ORM | SQLModel / SQLAlchemy |
 | 中文分词 | jieba |
 | 配置管理 | python-dotenv / pydantic-settings |
@@ -71,24 +67,6 @@ Milvus 向量召回
     ↓
 返回学生最终答案
 ````
-
-知识库入库流程：
-
-```text
-Markdown 学工手册 / 教务文件
-    ↓
-按标题和段落切片
-    ↓
-提取本校关键词
-    ↓
-生成本地向量
-    ↓
-写入 Milvus
-    ↓
-写入 MySQL
-```
-
----
 
 ## 4. 项目结构
 
@@ -151,64 +129,15 @@ local_hash：本地生成知识向量，不依赖额外 embedding API
 
 ## 6. 安装依赖
 
-克隆项目：
+python所需依赖已经归类到一处：
 
 ```bash
-git clone https://github.com/your-name/campus-ai-python-rag.git
-cd campus-ai-python-rag
-```
-
-创建 Python 虚拟环境：
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Windows PowerShell：
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\activate
-```
-
-安装依赖：
-
-```bash
-python -m pip install --upgrade pip setuptools wheel
 python -m pip install -r requirements.txt
-```
-
-如果下载较慢，可以使用国内镜像源：
-
-```bash
-python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 ---
 
 ## 7. 初始化 MySQL
-
-进入 MySQL：
-
-```bash
-mysql -uroot -p
-```
-
-创建数据库和用户：
-
-```sql
-CREATE DATABASE IF NOT EXISTS campus_ai
-DEFAULT CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
-
-CREATE USER IF NOT EXISTS 'campus_ai'@'%'
-IDENTIFIED BY 'campus_ai_pwd';
-
-GRANT ALL PRIVILEGES ON campus_ai.* TO 'campus_ai'@'%';
-
-FLUSH PRIVILEGES;
-```
 
 如果你已经有自己的 MySQL 用户，也可以直接在 `.env` 中配置已有账号。
 
@@ -216,53 +145,41 @@ FLUSH PRIVILEGES;
 
 ## 8. 配置环境变量
 
-复制配置文件：
-
-```bash
-cp .env.example .env
-```
-
-编辑 `.env`：
-
-```bash
-nano .env
-```
-
-示例配置：
+编辑 `.env`，示例配置：
 
 ```env
 # MySQL
 MYSQL_HOST=你的MySQL服务器IP
 MYSQL_PORT=3306
-MYSQL_USER=campus_ai
-MYSQL_PASSWORD=campus_ai_pwd
-MYSQL_DATABASE=campus_ai
+MYSQL_USER=your_user
+MYSQL_PASSWORD=your_pwd
+MYSQL_DATABASE=your_ai_db
 MYSQL_CHARSET=utf8mb4
 
 # Milvus
-MILVUS_URI=http://你的Milvus服务器IP:19530
+MILVUS_URI= http://你的Milvus服务器IP:19530
 MILVUS_TOKEN=
-MILVUS_COLLECTION=campus_student_handbook
-MILVUS_DIMENSION=1024
-MILVUS_METRIC=COSINE
+MILVUS_COLLECTION= your_collection
+MILVUS_DIMENSION= 默认1024
+MILVUS_METRIC= 默认COSINE
 
-# LongCat / OpenAI Compatible API
-OPENAI_API_KEY=你的LongCat_API_KEY
-OPENAI_BASE_URL=https://api.longcat.chat/openai/v1
-OPENAI_CHAT_MODEL=LongCat-Flash-Lite
+# OpenAI Compatible API
+OPENAI_API_KEY=your_API_KEY
+OPENAI_BASE_URL=your_url
+OPENAI_CHAT_MODEL=your_model
 
 # 本地向量化
 EMBEDDING_PROVIDER=local_hash
 OPENAI_EMBEDDING_MODEL=
 
-# LongCat 当前使用 chat/completions
+# 当前使用 chat/completions 格式返回数据
 USE_RESPONSES_API=false
 
 # 如果平台没有 moderation 接口，可以关闭
 ENABLE_OPENAI_MODERATION=false
 OPENAI_MODERATION_MODEL=omni-moderation-latest
 
-# 审核模式
+# 审核模式，默认关闭人工审核
 MANUAL_REVIEW_ENABLED=false
 BANNED_WORDS_FILE=./data/banned_words.txt
 QUICK_REVIEW_CHECK_QUESTION=false
@@ -283,13 +200,6 @@ STREAMLIT_API_BASE=http://127.0.0.1:8000
 ADMIN_TOKEN=change_this_admin_token
 ```
 
-注意：
-
-```text
-不要把 .env 文件提交到 GitHub。
-不要把真实 API Key 写进 README 或代码。
-```
-
 ---
 
 ## 9. 配置本校关键词库
@@ -298,41 +208,6 @@ ADMIN_TOKEN=change_this_admin_token
 
 ```text
 data/campus_keywords.yml
-```
-
-示例：
-
-```yaml
-intents:
-  教务考试:
-    - 考试
-    - 期末考试
-    - 补考
-    - 重修
-    - 缓考
-    - 成绩
-    - 绩点
-    - 学分
-
-  毕业设计:
-    - 毕设
-    - 毕业设计
-    - 毕业论文
-    - 开题
-    - 答辩
-    - 毕业设计不合格
-
-  奖助资助:
-    - 奖学金
-    - 助学金
-    - 困难认定
-    - 勤工助学
-
-aliases:
-  毕设: 毕业设计
-  不及格: 不合格
-  寝室: 宿舍
-  饭卡: 校园卡
 ```
 
 建议根据本校学工手册、教务文件中的高频词进行补充。
@@ -345,30 +220,6 @@ aliases:
 
 ```text
 data/banned_words.txt
-```
-
-示例：
-
-```text
-系统提示词
-隐藏指令
-开发者模式
-API Key
-OPENAI_API_KEY
-破解密码
-盗取账号
-代写论文联系方式
-代考联系方式
-regex:sk-[A-Za-z0-9_-]{20,}
-```
-
-规则：
-
-```text
-普通文本：答案中包含该文本即拦截
-regex: 开头：按正则表达式匹配
-# 开头：注释
-空行：忽略
 ```
 
 ---
@@ -547,17 +398,9 @@ Docker 方式：
 docker compose -f docker-compose.app.yml up -d --force-recreate
 ```
 
-### 3. 问题没有调用大模型
+### 3. 部分问题没有调用大模型
 
 系统会先判断知识库相关性。如果检索不到足够可靠的本校知识片段，可能不会调用大模型，而是返回兜底答案。
-
-可以检查：
-
-```sql
-SELECT id, raw_question, intent, relevance_score, status
-FROM question_records
-ORDER BY id DESC;
-```
 
 ### 4. 回答出现非本校内容
 
@@ -598,5 +441,4 @@ ORDER BY id DESC;
 
 可根据实际情况添加开源协议，例如 MIT License。
 
-```
 ```
