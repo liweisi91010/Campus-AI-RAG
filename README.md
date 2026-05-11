@@ -440,5 +440,3 @@ docker compose -f docker-compose.app.yml up -d --force-recreate
 本项目仅用于学习、课程设计、毕业设计和校园智能问答原型验证。
 
 可根据实际情况添加开源协议，例如 MIT License。
-
-```
