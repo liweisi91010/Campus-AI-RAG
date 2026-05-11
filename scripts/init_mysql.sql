@@ -1,0 +1,4 @@
+CREATE DATABASE IF NOT EXISTS campus_ai DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'campus_ai'@'%' IDENTIFIED BY 'campus_ai_pwd';
+GRANT ALL PRIVILEGES ON campus_ai.* TO 'campus_ai'@'%';
+FLUSH PRIVILEGES;
